@@ -11,6 +11,8 @@ typedef struct _objects_t {
     lv_obj_t *main;
     lv_obj_t *example;
     lv_obj_t *my;
+    lv_obj_t *webserver;
+    lv_obj_t *web_label;
 } objects_t;
 
 extern objects_t objects;

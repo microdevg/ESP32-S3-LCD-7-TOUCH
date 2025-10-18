@@ -72,11 +72,6 @@ void create_screen_main() {
             lv_img_set_src(obj, &img_my);
         }
         {
-            lv_obj_t *obj = lv_canvas_create(parent_obj);
-            lv_obj_set_pos(obj, 36, 160);
-            lv_obj_set_size(obj, 235, 177);
-        }
-        {
             lv_obj_t *obj = lv_spinner_create(parent_obj, 1000, 60);
             lv_obj_set_pos(obj, 350, 337);
             lv_obj_set_size(obj, 80, 80);
@@ -97,6 +92,24 @@ void create_screen_main() {
                     lv_meter_set_indicator_value(obj, indicator, 30);
                 }
             }
+        }
+        {
+            // webserver
+            lv_obj_t *obj = lv_qrcode_create(parent_obj, 160, lv_color_hex(0xff20429f), lv_color_hex(0xffe2f5fe));
+            objects.webserver = obj;
+            lv_obj_set_pos(obj, 49, 160);
+            lv_obj_set_size(obj, 160, 160);
+            lv_qrcode_update(obj, "http://my-esp.32.com", 20);
+            lv_obj_add_flag(obj, LV_OBJ_FLAG_CLICKABLE);
+        }
+        {
+            // web-label
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.web_label = obj;
+            lv_obj_set_pos(obj, 44, 127);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_font(obj, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_EDITED);
+            lv_label_set_text(obj, "Webserver configuracion");
         }
     }
     
