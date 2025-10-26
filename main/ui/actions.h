@@ -7,6 +7,10 @@
 extern "C" {
 #endif
 
+extern void action_counter_refresh(lv_event_t * e);
+extern void action_add_counter(lv_event_t * e);
+extern void action_counter_update(lv_event_t * e);
+extern void action_new_key(lv_event_t * e);
 
 
 #ifdef __cplusplus

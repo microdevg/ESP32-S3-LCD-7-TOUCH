@@ -18,7 +18,68 @@ static const char *myTAG = "APP_MAIN";
 
 #include <lvgl.h>
 
+#include <string.h>
+char buffer[100]={0};
+char counter_string[100] = { 0 };
+int32_t counter;
+
+int32_t get_var_counter() {
+    return counter;
+}
+
+void set_var_counter(int32_t value) {
+    counter = value;
+}
+const char *get_var_counter_string() {
+    return counter_string;
+}
+
+void set_var_counter_string(const char *value) {
+    strncpy(counter_string, value, sizeof(counter_string) / sizeof(char));
+    counter_string[sizeof(counter_string) / sizeof(char) - 1] = 0;
+}
+ void action_new_key(lv_event_t * e){
+    // 1) Recuperar el textarea asociado al teclado
+    lv_obj_t *kb = lv_event_get_target(e);
+    lv_obj_t *ta = lv_keyboard_get_textarea(kb);
+    if (!ta)
+    {
+        printf("ERROR: No hay textarea asociado al teclado\n");
+        return;
+    }
+        const char *text = lv_textarea_get_text(ta);
+        printf(text);
+}
+
+
+void action_counter_refresh(lv_event_t * e){
+    int c = get_var_counter() + (int)e->user_data;
+    set_var_counter(c);
+    sprintf(buffer,"Counter:%ld\n",get_var_counter());
+    printf(buffer);
+    printf("el contenido del buffer es:%s\n",buffer);
+    set_var_counter_string(buffer);
+}
+
+void action_counter_update(lv_event_t * e){
+   printf("refresh text\n");
+}
+
+
+//#include "vars.h"
+
+
+
+
+
+
 static SemaphoreHandle_t lvgl_mux = NULL;
+
+
+
+
+
+
 
 
 bool lvgl_lock(int timeout_ms)
@@ -94,6 +155,12 @@ void app_main()
         ui_init();
         // Release the mutex
         lvgl_unlock();
+    }
+
+    
+    while(1){
+        ui_tick(); // Con esta funcion refresco pantalla
+        vTaskDelay(500 / portTICK_PERIOD_MS);
     }
 }
     

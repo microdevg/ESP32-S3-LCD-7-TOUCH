@@ -9,10 +9,9 @@ extern "C" {
 
 typedef struct _objects_t {
     lv_obj_t *main;
-    lv_obj_t *example;
-    lv_obj_t *my;
-    lv_obj_t *webserver;
-    lv_obj_t *web_label;
+    lv_obj_t *counter_label;
+    lv_obj_t *textarea;
+    lv_obj_t *obj0;
 } objects_t;
 
 extern objects_t objects;
