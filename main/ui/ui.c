@@ -18,16 +18,16 @@
 
 void ui_init() {
     eez_flow_init(assets, sizeof(assets), (lv_obj_t **)&objects, sizeof(objects), images, sizeof(images), actions);
+    init_vars();
 }
 
 void ui_tick() {
     eez_flow_tick();
+    tick_vars();
     tick_screen(g_currentScreen);
 }
 
 #else
-
-#include <string.h>
 
 static int16_t currentScreen = -1;
 
@@ -36,6 +36,15 @@ static lv_obj_t *getLvglObjectFromIndex(int32_t index) {
         return 0;
     }
     return ((lv_obj_t **)&objects)[index];
+}
+
+static const void *getLvglImageByName(const char *name) {
+    for (size_t imageIndex = 0; imageIndex < sizeof(images) / sizeof(ext_img_desc_t); imageIndex++) {
+        if (strcmp(images[imageIndex].name, name) == 0) {
+            return images[imageIndex].img_dsc;
+        }
+    }
+    return 0;
 }
 
 void loadScreen(enum ScreensEnum screenId) {
@@ -47,7 +56,6 @@ void loadScreen(enum ScreensEnum screenId) {
 void ui_init() {
     create_screens();
     loadScreen(SCREEN_ID_MAIN);
-
 }
 
 void ui_tick() {

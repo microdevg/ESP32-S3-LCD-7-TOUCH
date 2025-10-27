@@ -9,29 +9,27 @@ extern "C" {
 
 typedef struct _objects_t {
     lv_obj_t *main;
-    lv_obj_t *nodes;
+    lv_obj_t *keyboard_test;
     lv_obj_t *obj0;
-    lv_obj_t *change_1;
-    lv_obj_t *textarea;
-    lv_obj_t *counter_label;
     lv_obj_t *obj1;
     lv_obj_t *obj2;
-    lv_obj_t *change;
     lv_obj_t *obj3;
+    lv_obj_t *my_textarea;
+    lv_obj_t *obj4;
 } objects_t;
 
 extern objects_t objects;
 
 enum ScreensEnum {
     SCREEN_ID_MAIN = 1,
-    SCREEN_ID_NODES = 2,
+    SCREEN_ID_KEYBOARD_TEST = 2,
 };
 
 void create_screen_main();
 void tick_screen_main();
 
-void create_screen_nodes();
-void tick_screen_nodes();
+void create_screen_keyboard_test();
+void tick_screen_keyboard_test();
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);
