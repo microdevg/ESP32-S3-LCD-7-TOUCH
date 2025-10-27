@@ -11,17 +11,23 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
-
-// 🎯 SOLUCIÓN: DEFINE LA CONSTANTE TAG
-static const char *myTAG = "APP_MAIN"; 
-
+#include "ui/screens.h"
 
 #include <lvgl.h>
-
 #include <string.h>
+
+
+static SemaphoreHandle_t lvgl_mux = NULL;
 char buffer[100]={0};
 char counter_string[100] = { 0 };
 int32_t counter;
+int screen = SCREEN_ID_MAIN;
+
+void action_change_view(lv_event_t * e) {
+    screen = (screen == SCREEN_ID_NODES)?SCREEN_ID_MAIN: SCREEN_ID_NODES;
+    loadScreen(screen);
+}
+
 
 int32_t get_var_counter() {
     return counter;
@@ -39,7 +45,6 @@ void set_var_counter_string(const char *value) {
     counter_string[sizeof(counter_string) / sizeof(char) - 1] = 0;
 }
  void action_new_key(lv_event_t * e){
-    // 1) Recuperar el textarea asociado al teclado
     lv_obj_t *kb = lv_event_get_target(e);
     lv_obj_t *ta = lv_keyboard_get_textarea(kb);
     if (!ta)
@@ -66,26 +71,9 @@ void action_counter_update(lv_event_t * e){
 }
 
 
-//#include "vars.h"
-
-
-
-
-
-
-static SemaphoreHandle_t lvgl_mux = NULL;
-
-
-
-
-
-
-
 
 bool lvgl_lock(int timeout_ms)
 {
-    // Convert timeout in milliseconds to FreeRTOS ticks
-    // If `timeout_ms` is set to -1, the program will block until the condition is met
     const TickType_t timeout_ticks = (timeout_ms == -1) ? portMAX_DELAY : pdMS_TO_TICKS(timeout_ms);
     return xSemaphoreTakeRecursive(lvgl_mux, timeout_ticks) == pdTRUE;
 }
@@ -123,41 +111,20 @@ void create_simple_ui() {
     // lv_obj_add_event_cb(btn, button_event_cb, LV_EVENT_CLICKED, NULL); 
 }
 
-// void button_event_cb(lv_event_t *e) {
-//     // Imprime un mensaje en la consola serial al presionar el botón
-//     ESP_LOGI("LVGL", "Button Clicked!"); 
-// }
-
-
-// -------------------------------------------------------------
 
 void app_main()
 {
-    // ... el código dentro de app_main() permanece igual ...
-
     waveshare_esp32_s3_rgb_lcd_init(); 
     wavesahre_rgb_lcd_bl_on();  
-    
-    // Aquí es donde se usa la constante myTAG:
-    ESP_LOGI(myTAG, "Inicializando UI de EEZ Studio"); 
-    
-    // 1. Inicializa la UI (Crea los objetos LVGL)
-    
    // create_simple_ui();
-    // 2. LLAMAR A LA FUNCIÓN PARA CARGAR LA PANTALLA INICIAL
-    // Ejemplo (Asegúrate de que 'screens.h' esté incluido y los nombres sean correctos):
-    // loadScreen(SCREEN_ID_SCREEN_1); 
     lvgl_mux = xSemaphoreCreateRecursiveMutex();
     assert(lvgl_mux);
-
     if (lvgl_lock(-1))
     {
         ui_init();
         // Release the mutex
         lvgl_unlock();
     }
-
-    
     while(1){
         ui_tick(); // Con esta funcion refresco pantalla
         vTaskDelay(500 / portTICK_PERIOD_MS);
